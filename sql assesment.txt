@@ -1,0 +1,153 @@
+1.Local temporary table is use of accessable only with in the table, Global temporary table is used to accesse in out side.
+
+2. Check constraint is used to check whether the both primary key is working or not.
+
+3. Trigger is the funtion that is to trigger the values in the insert, update, and delete the values or tables.
+
+4. Identity is used to identify the seperate name or id in the column .
+
+5.rollback is used to stop the funtion. 
+commit is used to close the funtion. 
+
+7.Join
+Join is the funtion that is used to connect both table into a single table using for primary key and foreign key
+types:
+Inner join ,
+Left join, 
+Right join,
+Self join,
+Full join.
+
+8.Create one table and set one variable as a primary key and create another variable and join both table using foreign key.
+
+10.Clustered index is used to refer as an individual column in the table.
+
+SQL query
+
+CREATE DATABASE orginal 
+
+USE orginal
+
+CREATE TABLE Worker (
+	WORKER_ID INT NOT NULL PRIMARY KEY,
+	FIRST_NAME CHAR(25),
+	LAST_NAME CHAR(25),
+	SALARY int,
+	JOINING_DATE DATETIME,
+	DEPARTMENT CHAR(25)
+)
+
+INSERT INTO Worker 
+	(WORKER_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
+		(001, 'Monika', 'Arora', 100000, '08-05-2020 05:39:00', 'HR'),
+        (002, 'Niharika', 'Verma', 80000, '08-05-2020 05:39:00', 'Admin'),
+		(003, 'Vishal', 'Singhal', 300000, '08-05-2020 05:39:00', 'HR'),
+		(004, 'Amitabh', 'Singh', 500000, '08-05-2020 05:39:00', 'Admin'),
+		(005, 'Vivek', 'Bhati', 500000, '08-05-2020 05:39:00', 'Admin'),
+		(006, 'Vipul', 'Diwan', 200000, '08-05-2020 05:39:00', 'Account'),
+		(007, 'Satish', 'Kumar', 75000, '08-05-2020 05:39:00', 'Account'),
+		(008, 'Geetika', 'Chauhan', 90000, '08-05-2020 05:39:00', 'Admin');
+		
+
+select * from worker
+
+CREATE TABLE Bonus (
+	WORKER_REF_ID INT,
+	BONUS_AMOUNT INT,
+	BONUS_DATE DATETIME,
+	FOREIGN KEY (WORKER_REF_ID)
+		REFERENCES Worker(WORKER_ID)
+        ON DELETE CASCADE
+);
+
+
+INSERT INTO Bonus 
+	(WORKER_REF_ID, BONUS_AMOUNT, BONUS_DATE) VALUES
+		(001, 5000, '08-05-2020 05:39:00'),
+		(002, 3000, '08-05-2020 05:39:00'),
+		(003, 4000, '08-05-2020 05:39:00'),
+		(001, 4500, '08-05-2020 05:39:00'),
+		(002, 3500, '08-05-2020 05:39:00');
+
+select * from bonus
+
+
+
+
+
+CREATE TABLE Title (
+	WORKER_REF_ID INT,
+	WORKER_TITLE CHAR(25),
+	AFFECTED_FROM DATETIME,
+	FOREIGN KEY (WORKER_REF_ID)
+		REFERENCES Worker(WORKER_ID)
+        ON DELETE CASCADE
+);
+
+INSERT INTO Title 
+	(WORKER_REF_ID, WORKER_TITLE, AFFECTED_FROM) VALUES
+ (001, 'Manager', '2016-02-20 00:00:00'),
+ (002, 'Executive', '2016-06-11 00:00:00'),
+ (008, 'Executive', '2016-06-11 00:00:00'),
+ (005, 'Manager', '2016-06-11 00:00:00'),
+ (004, 'Asst. Manager', '2016-06-11 00:00:00'),
+ (007, 'Executive', '2016-06-11 00:00:00'),
+ (006, 'Lead', '2016-06-11 00:00:00'),
+ (003, 'Lead', '2016-06-11 00:00:00');
+
+--Answer 2
+select CONCAT(FIRST_NAME,'', LAST_NAME) as COMPLETE_NAME FROM WORKER
+
+--Answer 6
+create trigger trg_updates
+on Title
+FOR Update
+as
+begin
+	print 'You cant update data'
+	rollback transaction 
+end
+
+drop trigger trg_update
+
+update Worker set WORKER_TITLE='Manager' where WORKER_TITLE='Executive'
+
+--Answer 9
+create index idx_BONUS_DATE on bonus(BONUS_DATE)
+
+--Answer 1
+select * into clone from worker
+
+--Answer 4
+select WORKER_ID from worker where salary between 100000 and 500000
+
+--Answer 10
+BEGIN TRANSACTION
+	insert into worker values(009, 'Rana', 'Arun', 100000, '08-05-2020 05:39:00', 'HR')
+	SAVE TRANSACTION insert_stmt
+	delete from worker where WORKER_ID =110
+ROLLBACK TRANSACTION insert_stmt
+COMMIT TRANSACTION
+
+SET EXPLICIT_TRANSACTION OFF
+
+select * from worker
+
+--Answer 7
+create function(@p @t @r)
+return int
+as 
+begin
+return(@p*@t*@r)/100
+end
+
+--Answer 3
+select * from worker order by FIRST_NAME
+
+--Answer 5
+select * from worker order by DEPARTMENT desc
+
+
+
+
+
